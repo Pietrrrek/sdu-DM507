@@ -86,7 +86,7 @@ public class DictBinTree implements Dict {
      * @param x The Node whose subtree we want to insert into a
      * @param a The int[] we should insert values into
      */
-    public void _orderedTraversal(Node x, int[] a) {
+    private void _orderedTraversal(Node x, int[] a) {
         if (x == null) { return; }
         // every value to the left of x should come before x
         _orderedTraversal(x.getLeft(), a);
