@@ -1,1 +1,4 @@
 .idea/
+/HuffmanConverter/nbproject/private/
+/HuffmanConverter/build/
+/HuffmanConverter/dist/
