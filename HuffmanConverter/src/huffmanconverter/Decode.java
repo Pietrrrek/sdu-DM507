@@ -1,11 +1,12 @@
 package huffmanconverter;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 /**
  *
@@ -78,11 +79,11 @@ public class Decode {
         
         // initialize our input and output streams
         BitInputStream inp = new BitInputStream(
-                new FileInputStream(args[0])
+                new BufferedInputStream(new FileInputStream(args[0]))
         );
         OutputStream outp = args.length < 2
                 ? System.out
-                : new FileOutputStream(args[1]);
+                : new BufferedOutputStream(new FileOutputStream(args[1]));
         
         // then decode our input and write it to our output
         huffmanDecode(inp, outp);

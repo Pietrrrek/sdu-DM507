@@ -3,6 +3,8 @@
  */
 package huffmanconverter;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -25,7 +27,7 @@ public class Encode {
     private static void huffmanEncode(
             String inpFilename, BitOutputStream outp) throws IOException {
         // first read our byte table from our input
-        int[] byteTable = readByteTable(new FileInputStream(inpFilename));
+        int[] byteTable = readByteTable(generateInputStream(inpFilename));
         // then generate our byte -> bit sequence table
         String[] lookupTable = Huffman.generate(byteTable);
         
@@ -35,11 +37,10 @@ public class Encode {
             outp.writeInt(i);
         }
         // then our encoded file
-        InputStream inp = new FileInputStream(inpFilename);
+        InputStream inp = generateInputStream(inpFilename);
         int data;
         while ((data = inp.read()) != -1) {
-            String keyword = lookupTable[data];
-            for (char c : keyword.toCharArray()) {
+            for (char c : lookupTable[data].toCharArray()) {
                 outp.writeBit(c == '0' ? 0 : 1);
             }
         }
@@ -64,6 +65,20 @@ public class Encode {
     }
     
     /**
+     * Generates an InputStream from a filename
+     * Moved to its own method because it's done twice,
+     *   and some testing was done to optimize it
+     * @param inpFilename File to create InputStream from
+     * @return A BufferedInputStream(FileInputStream) of the file
+     */
+    private static InputStream generateInputStream(String inpFilename)
+            throws FileNotFoundException {
+        return new BufferedInputStream(
+                new FileInputStream(inpFilename)
+        );
+    }
+    
+    /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
@@ -83,7 +98,7 @@ public class Encode {
         BitOutputStream outp = new BitOutputStream(
                 args.length < 2
                     ? System.out
-                    : new FileOutputStream(args[1])
+                    : new BufferedOutputStream(new FileOutputStream(args[1]))
         );
         
         // then encode our input and write it to our output
