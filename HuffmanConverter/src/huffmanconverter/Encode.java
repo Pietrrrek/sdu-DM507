@@ -41,9 +41,7 @@ public class Encode {
         // first read our byte table from our input
         int[] byteTable = readByteTable(new FileInputStream(inpFilename));
         // then generate our byte -> bit sequence table
-        String[] lookupTable = Huffman.toKeywords(
-                Huffman.generateTree(byteTable)
-        );
+        String[] lookupTable = Huffman.generate(byteTable);
         
         // then write our output
         // first our byte table for later decoding

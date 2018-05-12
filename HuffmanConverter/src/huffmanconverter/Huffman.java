@@ -8,7 +8,7 @@ import huffmanconverter.PriorityQueue.PQHeap;
  * @author me
  */
 public class Huffman {
-    public static class TreeNode {
+    private static class TreeNode {
         public Object left;
         public Object right;
         public TreeNode(Object left, Object right) {
@@ -18,11 +18,20 @@ public class Huffman {
     }
     
     /**
+     * Generates keywords from a frequency table
+     * @param byteTable An int[] with each value being the # of occurrences of the byte
+     * @return A String[] of the bit-sequences that represent each byte
+     */
+    public static String[] generate(int[] byteTable) {
+        return toKeywords(generateTree(byteTable));
+    }
+    
+    /**
      * Turns a byte table into a Huffman tree
      * @param byteTable An int[] with each value being the # of occurrences of the byte
      * @return A TreeNode which represents the whole Huffman tree
      */
-    public static TreeNode generateTree(int[] byteTable) {
+    private static TreeNode generateTree(int[] byteTable) {
         PQHeap queue = new PQHeap(byteTable.length);
         // add each byte we've seen at least once to the queue
         for (int byt = 0; byt < byteTable.length; ++byt) {
@@ -58,7 +67,7 @@ public class Huffman {
      * @param tree The Huffman tree
      * @return A String[256], with each value being the bit sequence used to refer to the byte
      */
-    public static String[] toKeywords(TreeNode tree) {
+    private static String[] toKeywords(TreeNode tree) {
         String[] keywords = new String[256];
         _toKeywordsHelper(tree, keywords, "");
         return keywords;
