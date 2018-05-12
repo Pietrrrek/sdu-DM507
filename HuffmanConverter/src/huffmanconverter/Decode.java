@@ -85,5 +85,9 @@ public class Decode {
         
         // then decode our input and write it to our output
         huffmanDecode(inp, outp);
+        
+        // then close our streams
+        inp.close();
+        outp.close();
     }
 }
