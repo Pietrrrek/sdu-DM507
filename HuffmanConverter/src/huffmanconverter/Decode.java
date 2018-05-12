@@ -22,7 +22,8 @@ public class Decode {
     private static void huffmanDecode(BitInputStream inp, OutputStream outp) throws IOException {
         // first read our byte table from the file
         int[] byteTable = new int[256];
-        int numBytes = 0;
+        // long used so we can decode filesizes of a couple exabytes instead of ~2 GB with int
+        long numBytes = 0;
         for (int i = 0; i < byteTable.length; ++i) {
             byteTable[i] = inp.readInt();
             numBytes += byteTable[i];
@@ -32,7 +33,7 @@ public class Decode {
         Huffman.Tree tree = Huffman.generateTree(byteTable);
         
         // then decode the file
-        int decodedBytes = 0;
+        long decodedBytes = 0;
         while (decodedBytes < numBytes) {
             outp.write(decodeByte(inp, tree));
             ++decodedBytes;
