@@ -15,20 +15,6 @@ import java.io.InputStream;
  */
 public class Encode {    
     /**
-     * Reads a file, returning an int[256] of occurrences of each byte
-     * @param input The input to read
-     * @return An int[256] with each value being the # of occurrences of the byte
-     */
-    private static int[] readByteTable(InputStream input) throws IOException {
-        int[] byteTable = new int[256];
-        int data;
-        while ((data = input.read()) != -1) {
-            ++byteTable[data];
-        }
-        return byteTable;
-    }
-    
-    /**
      * Encodes a file according to Huffman encoding
      * First outputs the byte table for later decoding
      * Then outputs the input content
@@ -64,12 +50,26 @@ public class Encode {
     }
     
     /**
+     * Reads a file, returning an int[256] of occurrences of each byte
+     * @param input The input to read
+     * @return An int[256] with each value being the # of occurrences of the byte
+     */
+    private static int[] readByteTable(InputStream input) throws IOException {
+        int[] byteTable = new int[256];
+        int data;
+        while ((data = input.read()) != -1) {
+            ++byteTable[data];
+        }
+        return byteTable;
+    }
+    
+    /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         if (args.length < 1) {
-            System.out.println("\u001B[31m[Err] No input given\nUsage:\n  java Encode in.txt [out.txt]");
+            System.out.println("\u001B[31m[Err] No input given\nUsage:\n  java Encode in.txt [out.enc]");
             return;
         }
         if (args.length < 2) {
