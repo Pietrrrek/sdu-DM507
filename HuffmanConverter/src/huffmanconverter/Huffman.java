@@ -75,6 +75,11 @@ public class Huffman {
             queue.insert(new Element(left.key + right.key, node));
         }
         
+        // handle the case where we were given an empty file
+        if (queue.size() == 0) {
+            return null;
+        }
+        
         // we know the lone elm is a Node as both leafs and nodes are represented as such
         return (Node) queue.extractMin().data;
     }
@@ -95,6 +100,7 @@ public class Huffman {
     /** Calculates keyword in the subtree and inserts them into the String[] */
     private static void _toKeywordsHelper(
             Node node, String[] table, String curKeyword) {
+        if (node == null) { return; } // handle the case where we were given an empty file
         if (node.isLeaf()) {
             table[node.getByte()] = curKeyword;
         } else {
