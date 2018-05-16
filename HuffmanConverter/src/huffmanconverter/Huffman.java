@@ -8,21 +8,36 @@ import huffmanconverter.PriorityQueue.PQHeap;
  * @author me
  */
 public class Huffman {
+    /**
+     * A node in a tree (possibly the root)
+     * If the children are null, it is a leaf and has a byte (byt)
+     * If the children are not null, it is an internal node and does not have a byte (byt)
+     */
     public static class Node {
         public Node left;
         public Node right;
-        public boolean isLeaf;
-        public int leafData;
+        private int byt;
+        
         /** Initializes an internal node (not a leaf) */
         public Node(Node left, Node right) {
             this.left = left;
             this.right = right;
-            this.isLeaf = false;
+            this.byt = -1;
         }
+        
         /** Initializes a leaf node that contains data */
-        public Node(int leafData) {
-            this.isLeaf = true;
-            this.leafData = leafData;
+        public Node(int byt) {
+            this.byt = byt;
+        }
+        
+        /** Checks whether the node is a leaf node */
+        public boolean isLeaf() {
+            return this.left == null && this.right == null;
+        }
+        
+        /** Gets the byte this Node represents (if it is a leaf node) */
+        public int getByte() {
+            return this.byt;
         }
     }
     
@@ -80,8 +95,8 @@ public class Huffman {
     /** Calculates keyword in the subtree and inserts them into the String[] */
     private static void _toKeywordsHelper(
             Node node, String[] table, String curKeyword) {
-        if (node.isLeaf) {
-            table[node.leafData] = curKeyword;
+        if (node.isLeaf()) {
+            table[node.getByte()] = curKeyword;
         } else {
             _toKeywordsHelper(node.left, table, curKeyword+"0");
             _toKeywordsHelper(node.right, table, curKeyword+"1");

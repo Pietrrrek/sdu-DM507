@@ -56,8 +56,8 @@ public class Decode {
                     : curTree.right;
             // we know the child is either a new subtree or a leaf
             // if it's a leaf, it's the byte we decoded into
-            if (child.isLeaf) {
-                return child.leafData;
+            if (child.isLeaf()) {
+                return child.getByte();
             } else {
                 curTree = child;
             }
