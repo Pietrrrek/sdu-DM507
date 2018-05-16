@@ -8,12 +8,21 @@ import huffmanconverter.PriorityQueue.PQHeap;
  * @author me
  */
 public class Huffman {
-    public static class Tree {
-        public Object left;
-        public Object right;
-        public Tree(Object left, Object right) {
+    public static class Node {
+        public Node left;
+        public Node right;
+        public boolean isLeaf;
+        public int leafData;
+        /** Initializes an internal node (not a leaf) */
+        public Node(Node left, Node right) {
             this.left = left;
             this.right = right;
+            this.isLeaf = false;
+        }
+        /** Initializes a leaf node that contains data */
+        public Node(int leafData) {
+            this.isLeaf = true;
+            this.leafData = leafData;
         }
     }
     
@@ -31,35 +40,28 @@ public class Huffman {
      * @param byteTable An int[] with each value being the # of occurrences of the byte
      * @return A TreeNode which represents the whole Huffman tree
      */
-    public static Tree generateTree(int[] byteTable) {
+    public static Node generateTree(int[] byteTable) {
         PQHeap queue = new PQHeap(byteTable.length);
         // add each byte we've seen at least once to the queue
         for (int byt = 0; byt < byteTable.length; ++byt) {
             if (byteTable[byt] != 0) {
                 // the byte is ordered according to how often it was seen
-                queue.insert(new Element(byteTable[byt], byt));
+                queue.insert(new Element(byteTable[byt], new Node(byt)));
             }
         }
         
-        // abort early if we only have a single/no byte
-        if (queue.size() < 2) {
-            return new Tree(queue.extractMin(), null);
-        }
-        
-        // otherwise turn the queue into a single tree
+        // turn the queue into a single tree
         // we do this by repeatedly grabbing the two smallest subtrees
         //   and joining them into one, then re-inserting that into queue
         while (queue.size() > 1) {
             Element left = queue.extractMin();
             Element right = queue.extractMin();
-            Tree node = new Tree(left.data, right.data);
+            Node node = new Node((Node) left.data, (Node) right.data);
             queue.insert(new Element(left.key + right.key, node));
         }
         
-        // we know the lone elm is a TreeNode
-        // the only exception is if queue.size() was never > 1
-        // which was handled at our early abort
-        return (Tree) queue.extractMin().data;
+        // we know the lone elm is a Node as both leafs and nodes are represented as such
+        return (Node) queue.extractMin().data;
     }
     
     /**
@@ -69,7 +71,7 @@ public class Huffman {
      * @param tree The Huffman tree
      * @return A String[256], with each value being the bit sequence used to refer to the byte
      */
-    public static String[] toKeywords(Tree tree) {
+    public static String[] toKeywords(Node tree) {
         String[] keywords = new String[256];
         _toKeywordsHelper(tree, keywords, "");
         return keywords;
@@ -77,15 +79,12 @@ public class Huffman {
     
     /** Calculates keyword in the subtree and inserts them into the String[] */
     private static void _toKeywordsHelper(
-            Object node, String[] table, String curKeyword) {
-        if (node instanceof Tree) {
-            Tree subtree = (Tree) node;
-            _toKeywordsHelper(subtree.left, table, curKeyword+"0");
-            _toKeywordsHelper(subtree.right, table, curKeyword+"1");
-        } else if (node instanceof Integer) {
-            table[(Integer) node] = curKeyword;
+            Node node, String[] table, String curKeyword) {
+        if (node.isLeaf) {
+            table[node.leafData] = curKeyword;
         } else {
-            System.err.println("[Err] Unknown node when converting Huffman -> keywords: "+node);
+            _toKeywordsHelper(node.left, table, curKeyword+"0");
+            _toKeywordsHelper(node.right, table, curKeyword+"1");
         }
     }
 }

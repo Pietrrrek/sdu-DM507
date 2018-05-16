@@ -31,7 +31,7 @@ public class Decode {
         }
         
         // then convert that to a Huffman tree
-        Huffman.Tree tree = Huffman.generateTree(byteTable);
+        Huffman.Node tree = Huffman.generateTree(byteTable);
         
         // then decode the file
         long decodedBytes = 0;
@@ -46,20 +46,20 @@ public class Decode {
      * @param inp The input to decode a byte from
      * @param tree The Huffman tree to use for decoding
      */
-    private static int decodeByte(BitInputStream inp, Huffman.Tree tree) throws IOException {
-        Huffman.Tree curTree = tree;
+    private static int decodeByte(BitInputStream inp, Huffman.Node tree) throws IOException {
+        Huffman.Node curTree = tree;
         // keep going until we reach a leaf in the tree
         while (true) {
             int bit = inp.readBit();
-            Object child = bit == 0
+            Huffman.Node child = bit == 0
                     ? curTree.left
                     : curTree.right;
             // we know the child is either a new subtree or a leaf
             // if it's a leaf, it's the byte we decoded into
-            if (child instanceof Huffman.Tree) {
-                curTree = (Huffman.Tree) child;
+            if (child.isLeaf) {
+                return child.leafData;
             } else {
-                return (int) child;
+                curTree = child;
             }
         }
     }

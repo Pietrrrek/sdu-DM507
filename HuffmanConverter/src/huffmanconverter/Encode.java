@@ -36,6 +36,7 @@ public class Encode {
         for (int i : byteTable) {
             outp.writeInt(i);
         }
+        
         // then our encoded file
         InputStream inp = generateInputStream(inpFilename);
         int data;
